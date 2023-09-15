@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import CustomNavbar from '@/pages/index/components/CustomNavbar.vue'
 import { getHomeBannerAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { BannerItem } from '@/types/home'
+import CustomNavbar from '@/pages/index/components/CustomNavbar.vue'
+import CategoryPanel from '@/components/CategoryPanel.vue'
 
 // 轮播图数据
 const bannerList = ref<BannerItem[]>([])
@@ -20,6 +21,7 @@ onLoad(() => {
 <template>
   <CustomNavbar />
   <CommonSwiper :list="bannerList" />
+  <CategoryPanel />
   <view class="index">index</view>
 </template>
 
