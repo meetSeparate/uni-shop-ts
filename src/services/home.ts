@@ -1,5 +1,5 @@
 // 存放路径: src/services/home.ts
-import type { BannerItem, CategoryItem } from '@/types/home'
+import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { request } from '@/utils/request'
 
 /**
@@ -20,6 +20,14 @@ export const getHomeBannerAPI = (distributionSite = 1) => {
 export const getHomeCategoryAPI = () => {
   return request<CategoryItem[]>({
     url: '/home/category/mutli',
+    method: 'GET',
+  })
+}
+
+// 获取首页热门推荐数据
+export const getHomeHotAPI = () => {
+  return request<HotItem[]>({
+    url: '/home/hot/mutli',
     method: 'GET',
   })
 }
