@@ -1,5 +1,19 @@
 <script setup lang="ts">
-//
+import { onMounted, ref } from 'vue'
+import { getHomeGoodsGuessAPI } from '@/services/home'
+import type { PageResult } from '@/types/global'
+import type { GuessItem } from '@/types/home'
+
+// 猜你喜欢列表
+const guessList = ref<GuessItem[]>([])
+const getHomeGoodsGuessData = async () => {
+  const res = await getHomeGoodsGuessAPI()
+  guessList.value = res.result.items
+}
+
+onMounted(() => {
+  getHomeGoodsGuessData()
+})
 </script>
 
 <template>
