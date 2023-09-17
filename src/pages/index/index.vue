@@ -29,6 +29,28 @@ const getHomeHotData = async () => {
   const res = await getHomeHotAPI()
   hotList.value = res.result
 }
+// 触底加载猜你喜欢
+const guessRef = ref()
+
+// 滚动触底事件
+const onScrollToLower = () => {
+  guessRef.value?.getMore()
+}
+
+// 下拉刷新
+const isTriggered = ref(false)
+
+const onRefresherRefresh = async () => {
+  isTriggered.value = true
+  guessRef.value.resetData()
+  await Promise.all([
+    getHomeBannerData(),
+    getHomeCategoryData(),
+    getHomeHotData(),
+    guessRef.value.getMore(),
+  ])
+  isTriggered.value = false
+}
 
 onLoad(() => {
   getHomeBannerData()
@@ -39,11 +61,18 @@ onLoad(() => {
 
 <template>
   <CustomNavbar />
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view
+    scroll-y
+    class="scroll-view"
+    @scrolltolower="onScrollToLower"
+    refresher-enabled
+    @refresherrefresh="onRefresherRefresh"
+    :refresher-triggered="isTriggered"
+  >
     <CommonSwiper :list="bannerList" />
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList" />
-    <CommonGuess />
+    <CommonGuess ref="guessRef" />
   </scroll-view>
 </template>
 

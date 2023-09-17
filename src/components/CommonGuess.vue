@@ -1,15 +1,47 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getHomeGoodsGuessAPI } from '@/services/home'
-import type { PageResult } from '@/types/global'
+import type { PageParams } from '@/types/global'
 import type { GuessItem } from '@/types/home'
 
+// 分页参数
+const pageParams: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
 // 猜你喜欢列表
 const guessList = ref<GuessItem[]>([])
+
+// 已结束标记
+const finish = ref(false)
+
 const getHomeGoodsGuessData = async () => {
-  const res = await getHomeGoodsGuessAPI()
-  guessList.value = res.result.items
+  // 退出分页判断
+  if (finish.value) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据了~' })
+  }
+  const res = await getHomeGoodsGuessAPI(pageParams)
+  guessList.value.push(...res.result.items)
+  if (pageParams.pageSize < res.result.pages) {
+    // 页码累加
+    pageParams.page++
+  } else {
+    finish.value = true
+  }
 }
+
+// 重置数据
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
+
+// 暴露方法
+defineExpose({
+  resetData,
+  getMore: getHomeGoodsGuessData,
+})
 
 onMounted(() => {
   getHomeGoodsGuessData()
