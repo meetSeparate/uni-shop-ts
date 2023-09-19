@@ -10,6 +10,10 @@ const getBannerData = async () => {
   const res = await getHomeBannerAPI(2)
   bannerList.value = res.result
 }
+
+// 获取一级一级二级分类数据
+const getCategoryTopData = async () => {
+}
 onLoad(() => {
   getBannerData()
 })
