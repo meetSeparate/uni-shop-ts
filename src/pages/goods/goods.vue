@@ -4,8 +4,9 @@ import { ref } from 'vue'
 import { getGoodsByIdAPI } from '@/services/goods'
 import type { GoodsResult } from '@/types/goods'
 import { onLoad } from '@dcloudio/uni-app'
-import AddressPanel from './components/AddressPanel.vue'
-import ServicePanel from './components/ServicePanel.vue'
+import AddressPanel from '@/pages/goods/components/AddressPanel.vue'
+import ServicePanel from '@/pages/goods/components/ServicePanel.vue'
+import PageSkeleton from "@/pages/goods/components/PageSkeleton.vue";
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -20,9 +21,15 @@ const getGoodsDetail = async () => {
   const res = await getGoodsByIdAPI(query.id)
   goods.value = res.result
 }
+
+// 是否展示骨架屏
+const isLoading = ref(false)
+
 // 页面加载
-onLoad(() => {
-  getGoodsDetail()
+onLoad(async () => {
+  isLoading.value = true
+  await getGoodsDetail()
+  isLoading.value = false
 })
 // 轮播图变化
 const currentIndex = ref(0)
@@ -53,7 +60,8 @@ const openPopup = (name: typeof popupName.value) => {
 </script>
 
 <template>
-  <scroll-view scroll-y class="viewport">
+  <page-skeleton v-if="isLoading" />
+  <scroll-view scroll-y class="viewport" v-if="!isLoading">
     <!-- 基本信息 -->
     <view class="goods">
       <!-- 商品主图 -->
@@ -143,7 +151,6 @@ const openPopup = (name: typeof popupName.value) => {
       </view>
     </view>
   </scroll-view>
-
   <!-- 用户操作 -->
   <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
     <view class="icons">
