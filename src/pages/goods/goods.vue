@@ -1,16 +1,44 @@
 <script setup lang="ts">
 // 获取屏幕边界到安全区域距离
+import { ref } from 'vue'
+import { getGoodsByIdAPI } from '@/services/goods'
+import type { GoodsResult } from '@/types/goods'
+import { onLoad } from '@dcloudio/uni-app'
+
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
 // 接收页面参数
 const query = defineProps<{
   id: string
 }>()
+// 获取数据
+const goods = ref<GoodsResult>()
+
+const getGoodsDetail = async () => {
+  const res = await getGoodsByIdAPI(query.id)
+  goods.value = res.result
+}
+// 页面加载
+onLoad(() => {
+  getGoodsDetail()
+})
+// 轮播图变化
+const currentIndex = ref(0)
+const onChange: UniHelper.SwiperOnChange = (ev) => {
+  currentIndex.value = ev.detail.current
+}
+// 大图预览
+const onTapImage = (url: string) => {
+  uni.previewImage({
+    current: url,
+    urls: goods.value!.mainPictures,
+  })
+}
 </script>
 
 <template>
   <scroll-view scroll-y class="viewport">
-    <!-- 基本信息 -->
+    <!-- 基本信息 -->·
     <view class="goods">
       <!-- 商品主图 -->
       <view class="preview">
