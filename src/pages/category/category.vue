@@ -3,6 +3,8 @@ import { getHomeBannerAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { BannerItem } from '@/types/home'
+import { getCategoryAPI } from '@/services/category'
+import type { CategoryTopItem } from '@/types/category'
 
 // 定义分类轮播图
 const bannerList = ref<BannerItem[]>([])
@@ -12,10 +14,17 @@ const getBannerData = async () => {
 }
 
 // 获取一级一级二级分类数据
-const getCategoryTopData = async () => {
+const categoryList = ref<CategoryTopItem[]>([])
+const getCategoryData = async () => {
+  const res = await getCategoryAPI()
+  categoryList.value = res.result
 }
+// 高亮下标
+const activeIndex = ref(0)
+
 onLoad(() => {
   getBannerData()
+  getCategoryData()
 })
 </script>
 
@@ -31,8 +40,14 @@ onLoad(() => {
     <view class="categories">
       <!-- 左侧：一级分类 -->
       <scroll-view class="primary" scroll-y>
-        <view v-for="(item, index) in 10" :key="item" class="item" :class="{ active: index === 0 }">
-          <text class="name"> 居家 </text>
+        <view
+          v-for="(item, index) in categoryList"
+          :key="item.id"
+          class="item"
+          :class="{ active: index === activeIndex }"
+          @tap="activeIndex = index"
+        >
+          <text class="name"> {{ item.name }} </text>
         </view>
       </scroll-view>
       <!-- 右侧：二级分类 -->
