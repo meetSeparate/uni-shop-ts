@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 import type { BannerItem } from '@/types/home'
 import { getCategoryAPI } from '@/services/category'
 import type { CategoryTopItem } from '@/types/category'
+import PageSkeleton from './components/PageSkeleton.vue'
 
 // 定义分类轮播图
 const bannerList = ref<BannerItem[]>([])
@@ -26,15 +27,19 @@ const activeIndex = ref(0)
 const subCategoryList = computed(() => {
   return categoryList.value[activeIndex.value]?.children || []
 })
+// 是否展示骨架屏
+const isLoading = ref(false)
 
-onLoad(() => {
-  getBannerData()
-  getCategoryData()
+onLoad(async () => {
+  isLoading.value = true
+  await Promise.all([getBannerData(), getCategoryData()])
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <view class="viewport">
+  <page-skeleton v-if="isLoading" />
+  <view class="viewport" v-else>
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
@@ -52,7 +57,7 @@ onLoad(() => {
           :class="{ active: index === activeIndex }"
           @tap="activeIndex = index"
         >
-          <text class="name"> {{ item.name }} </text>
+          <text class="name">{{ item.name }}</text>
         </view>
       </scroll-view>
       <!-- 右侧：二级分类 -->
