@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
-import { postLoginWxMinAPI } from '@/services/login'
+import { postLoginWxMinAPI, wxLoginSimpleAPI } from '@/services/login'
 
 // 获取 code 登录凭证
 let code = ''
@@ -10,7 +10,7 @@ onLoad(async () => {
   code = res.code
 })
 
-// 获取用户手机号码
+// 获取用户手机号码(企业版)
 const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const encryptedData = ev.detail.encryptedData!
   const iv = ev.detail.iv!
@@ -20,6 +20,12 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
     iv,
   })
   // 成功提示
+  uni.showToast({ icon: 'none', title: '登录成功' })
+}
+
+// 获取用户手机号码(个人测试版)
+const onGetPhoneNumberSample = async () => {
+  await wxLoginSimpleAPI('15564356312')
   uni.showToast({ icon: 'none', title: '登录成功' })
 }
 </script>
@@ -48,7 +54,7 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
         </view>
         <view class="options">
           <!-- 通用模拟登录 -->
-          <button>
+          <button @tap="onGetPhoneNumberSample">
             <text class="icon icon-phone">模拟快捷登录</text>
           </button>
         </view>
