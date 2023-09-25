@@ -1,7 +1,27 @@
-// src/pages/login/login.vue
-
 <script setup lang="ts">
-//
+import { onLoad } from '@dcloudio/uni-app'
+import { postLoginWxMinAPI } from '@/services/login'
+
+// 获取 code 登录凭证
+let code = ''
+
+onLoad(async () => {
+  const res = await wx.login()
+  code = res.code
+})
+
+// 获取用户手机号码
+const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
+  const encryptedData = ev.detail.encryptedData!
+  const iv = ev.detail.iv!
+  await postLoginWxMinAPI({
+    code,
+    encryptedData,
+    iv,
+  })
+  // 成功提示
+  uni.showToast({ icon: 'none', title: '登录成功' })
+}
 </script>
 
 <template>
@@ -18,7 +38,7 @@
       <!-- <button class="button phone">登录</button> -->
 
       <!-- 小程序端授权登录 -->
-      <button class="button phone">
+      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber">
         <text class="icon icon-phone"></text>
         手机号快捷登录
       </button>
