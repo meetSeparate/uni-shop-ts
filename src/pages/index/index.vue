@@ -7,6 +7,7 @@ import CustomNavbar from '@/pages/index/components/CustomNavbar.vue'
 import CategoryPanel from '@/pages/index/components/CategoryPanel.vue'
 import PageSkeleton from '@/pages/index/components/PageSkeleton.vue'
 import HotPanel from '@/pages/index/components/HotPanel.vue'
+import { useGuessList } from '@/composables'
 
 // 轮播图数据
 const bannerList = ref<BannerItem[]>([])
@@ -31,12 +32,7 @@ const getHomeHotData = async () => {
   hotList.value = res.result
 }
 // 触底加载猜你喜欢
-const guessRef = ref()
-
-// 滚动触底事件
-const onScrollToLower = () => {
-  guessRef.value?.getMore()
-}
+const { guessRef, onScrollToLower } = useGuessList()
 
 // 下拉刷新
 const isTriggered = ref(false)
