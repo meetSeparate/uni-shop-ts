@@ -1,4 +1,3 @@
-// src/types/category.d.ts
 import type { GoodsItem } from './global'
 
 /** 一级分类项 */
