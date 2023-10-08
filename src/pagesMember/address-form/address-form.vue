@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { postMemberAddressAPI } from '@/services/address'
+import {
+  postMemberAddressAPI,
+  getMemberAddressByIdAPI,
+  putMemberAddressByIdAPI,
+} from '@/services/address'
+import { onLoad } from '@dcloudio/uni-app'
 
 // 获取页面参数
 const query = defineProps<{
@@ -36,7 +41,14 @@ const onSwitchChange: UniHelper.SwitchOnChange = (ev) => {
 }
 // 提交数据
 const onSubmit = async () => {
-  await postMemberAddressAPI(form.value)
+  // 判断当前页面是否有地址 id
+  if (query.id) {
+    // 修改地址请求
+    await putMemberAddressByIdAPI(query.id, form.value)
+  } else {
+    // 新建地址请求
+    await postMemberAddressAPI(form.value)
+  }
   // 成功提示
   uni.showToast({ icon: 'success', title: '添加成功' })
   // 返回上一页
@@ -44,6 +56,21 @@ const onSubmit = async () => {
     uni.navigateBack()
   }, 400)
 }
+// 获取收货地址详情数据
+const getMemberAddressByIdData = async () => {
+  // 有 id 才调用接口
+  if (query.id) {
+    // 发送请求
+    const res = await getMemberAddressByIdAPI(query.id)
+    // 把数据合并到表单中
+    Object.assign(form.value, res.result)
+  }
+}
+
+// 页面加载
+onLoad(() => {
+  getMemberAddressByIdData()
+})
 </script>
 
 <template>
