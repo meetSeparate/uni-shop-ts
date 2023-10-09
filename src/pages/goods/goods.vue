@@ -106,6 +106,20 @@ const openPopup = (name: typeof popupName.value) => {
 </script>
 
 <template>
+  <!-- SKU弹窗组件 -->
+  <vk-data-goods-sku-popup
+    v-model="isShowSku"
+    :localdata="localData"
+    :mode="mode"
+    add-cart-background-color="#FFA868"
+    buy-now-background-color="#27BA9B"
+    ref="skuPopupRef"
+    :actived-style="{
+      color: '#27BA9B',
+      borderColor: '#27BA9B',
+      backgroundColor: '#E9F8F5',
+    }"
+  />
   <page-skeleton v-if="isLoading" />
   <scroll-view scroll-y class="viewport" v-if="!isLoading">
     <!-- 基本信息 -->
@@ -142,7 +156,7 @@ const openPopup = (name: typeof popupName.value) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis"> 请选择收货地址 </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -217,21 +231,6 @@ const openPopup = (name: typeof popupName.value) => {
     <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
-
-  <!-- SKU弹窗组件 -->
-  <vk-data-goods-sku-popup
-    v-model="isShowSku"
-    :localdata="localData"
-    :mode="mode"
-    add-cart-background-color="#FFA868"
-    buy-now-background-color="#27BA9B"
-    ref="skuPopupRef"
-    :actived-style="{
-      color: '#27BA9B',
-      borderColor: '#27BA9B',
-      backgroundColor: '#E9F8F5',
-    }"
-  />
 </template>
 
 <style lang="scss">

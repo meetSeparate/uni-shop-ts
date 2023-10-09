@@ -123,7 +123,7 @@ const onSubmit = async () => {
         </view>
         <view class="form-item">
           <text class="label">性别</text>
-          <radio-group @click="onGenderChange">
+          <radio-group @change="onGenderChange">
             <label class="radio">
               <radio value="男" color="#27ba9b" :checked="profile?.gender === '男'" />
               男
