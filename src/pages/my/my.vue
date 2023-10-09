@@ -13,7 +13,7 @@ const orderTypes = [
 ]
 
 // 猜你喜欢触底加载
-const { onScrollToLower } = useGuessList()
+const { guessRef, onScrollToLower } = useGuessList()
 // 获取会员信息
 const memberStore = useMemberStore()
 </script>
