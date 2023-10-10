@@ -1,12 +1,35 @@
 <script setup lang="ts">
+import { getMemberCartAPI } from '@/services/cart'
 import { useMemberStore } from '@/stores'
+import type { CartItem } from '@/types/cart'
+import { onShow } from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { useGuessList } from '@/composables'
+
+// 购物车数据
+const cartList = ref<CartItem[]>([])
+const getMemberCartData = async () => {
+  const res = await getMemberCartAPI()
+  cartList.value = res.result
+}
 
 // 获取会员Store
 const memberStore = useMemberStore()
+
+// 猜你喜欢加载
+const { guessRef, onScrollToLower } = useGuessList()
+
+// 初始化调用: 页面显示触发
+onShow(() => {
+  // 用户已登录才允许调用
+  if (memberStore.profile) {
+    getMemberCartData()
+  }
+})
 </script>
 
 <template>
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrollToLower">
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
