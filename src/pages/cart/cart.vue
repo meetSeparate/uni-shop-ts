@@ -176,8 +176,12 @@ onShow(() => {
         <text class="text">合计:</text>
         <text class="amount">{{ selectedCartListMoney }}</text>
         <view class="button-grounp">
-          <view @tap="gotoPayment" class="button payment-button" :class="{ disabled: true }">
-            去结算({{ selectedCartListMoney }})
+          <view
+            @tap="gotoPayment"
+            class="button payment-button"
+            :class="{ disabled: selectedCartListCount === 0 }"
+          >
+            去结算({{ selectedCartListCount }})
           </view>
         </view>
       </view>
