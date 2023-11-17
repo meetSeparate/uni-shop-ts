@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import type { OrderPreResult } from '@/types/order'
-import { getMemberOrderPreAPI, getMemberOrderPreNowAPI } from '@/services/order'
+import { getMemberOrderPreAPI, getMemberOrderPreNowAPI, postMemberOrderAPI } from '@/services/order'
 import { useAddressStore } from '@/stores/modules/address'
 
 // 获取页面参数
@@ -48,6 +48,24 @@ const addressStore = useAddressStore()
 const selectAddress = computed(() => {
   return addressStore.selectedAddress || orderPre.value?.userAddresses.find((v) => v.isDefault)
 })
+// 生成订单
+const createOrder = async () => {
+  // 没有收货地址提醒
+  if (!selectAddress.value?.id) {
+    return uni.showToast({ icon: 'none', title: '请选择收货地址' })
+  }
+  // 发送请求
+  const res = await postMemberOrderAPI({
+    addressId: selectAddress.value?.id,
+    buyerMessage: buyerMessage.value,
+    deliveryTimeType: activeDelivery.value.type,
+    goods: orderPre.value!.goods.map((v) => ({ count: v.count, skuId: v.skuId })),
+    payChannel: 2,
+    payType: 1,
+  })
+  // 关闭当前页面，跳转到订单详情，传递订单id
+  uni.redirectTo({ url: `/pagesOrder/detail/detail?id=${res.result.id}` })
+}
 
 onMounted(() => {
   getMemberOrderPreData()
@@ -81,7 +99,7 @@ onMounted(() => {
     <!-- 商品信息 -->
     <view class="goods">
       <navigator
-        v-for="item in orderPre.goods"
+        v-for="item in orderPre?.goods"
         :key="item.id"
         :url="`/pages/goods/goods?id=${item.id}`"
         class="item"
@@ -140,7 +158,9 @@ onMounted(() => {
     <view class="total-pay symbol">
       <text class="number">{{ orderPre.summary.totalPayPrice }}</text>
     </view>
-    <view class="button" :class="{ disabled: !selectAddress }"> 提交订单 </view>
+    <view class="button" :class="{ disabled: !selectAddress?.id }" @tap="createOrder"
+      >提交订单
+    </view>
   </view>
 </template>
 

@@ -135,6 +135,12 @@
           "style": {
             "navigationBarTitleText": "订单结算"
           }
+        },
+        {
+          "path": "detail/detail",
+          "style": {
+            "navigationBarTitleText": "订单详情"
+          }
         }
       ]
     }
