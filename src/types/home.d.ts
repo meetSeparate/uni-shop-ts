@@ -30,13 +30,9 @@ export type HotItem = {
   /** id */
   id: string
   /** 图片集合[ 图片路径 ] */
-  pictures: string[]
-  /** 跳转地址 */
-  target: string
+  pictures: string
   /** 标题 */
   title: string
-  /** 推荐类型 */
-  type: string
 }
 
 // GuessItem 和 GoodsItem 类型相同

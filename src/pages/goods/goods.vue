@@ -188,41 +188,18 @@ const onBuyNow = (ev: SkuPopupEvent) => {
       <view class="content">
         <view class="properties">
           <!-- 属性详情 -->
-          <view class="item" v-for="item in goods?.details.properties" :key="item.name">
+          <view class="item" v-for="item in goods?.properties" :key="item.name">
             <text class="label">{{ item.name }}</text>
             <text class="value">{{ item.value }}</text>
           </view>
         </view>
         <!-- 图片详情 -->
         <image
-          v-for="item in goods?.details.pictures"
+          v-for="item in goods?.mainPictures"
           :key="item"
           mode="widthFix"
           :src="item"
         ></image>
-      </view>
-    </view>
-
-    <!-- 同类推荐 -->
-    <view class="similar panel">
-      <view class="title">
-        <text>同类推荐</text>
-      </view>
-      <view class="content">
-        <navigator
-          v-for="item in goods?.similarProducts"
-          :key="item.id"
-          class="goods"
-          hover-class="none"
-          :url="`/pages/goods/goods?id=${item.id}`"
-        >
-          <image class="image" mode="aspectFill" :src="item.picture"></image>
-          <view class="name ellipsis">{{ item.name }}</view>
-          <view class="price">
-            <text class="symbol">¥</text>
-            <text class="number">{{ item.price }}</text>
-          </view>
-        </navigator>
       </view>
     </view>
   </scroll-view>

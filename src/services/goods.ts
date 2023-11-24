@@ -8,7 +8,8 @@ import type { GoodsResult } from '@/types/goods'
 export const getGoodsByIdAPI = (id: string) => {
   return request<GoodsResult>({
     method: 'GET',
-    url: '/goods',
+    url: 'http://127.0.0.1:8000/api/goodsDetail',
+    // url: '/goods',
     data: { id },
   })
 }

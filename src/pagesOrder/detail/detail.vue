@@ -49,6 +49,7 @@ const pageInstance = pages.at(-1) as PageInstance
 
 // 页面渲染完毕，绑定动画效果
 onReady(() => {
+  console.log(123)
   // 动画效果,导航栏背景色
   pageInstance.animate(
     '.navbar', // 选择器

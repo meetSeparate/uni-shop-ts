@@ -2,9 +2,8 @@ import type { LoginResult } from '@/types/member'
 import { request } from '@/utils/request'
 
 type LoginParams = {
-  code: string
-  encryptedData: string
-  iv: string
+  username: string
+  password: string
 }
 /**
  * 小程序登录
@@ -18,7 +17,6 @@ export const postLoginWxMinAPI = (data: LoginParams) => {
   })
 }
 
-
 // 小程序模拟登录
 export const wxLoginSimpleAPI = (phoneNumber: string) => {
   return request<LoginResult>({
@@ -27,5 +25,14 @@ export const wxLoginSimpleAPI = (phoneNumber: string) => {
     data: {
       phoneNumber,
     },
+  })
+}
+
+// 小程序表单登录
+export const loginAPI = (data: LoginParams) => {
+  return request({
+    url: 'http://127.0.0.1:8000/api/login/',
+    method: 'POST',
+    data,
   })
 }

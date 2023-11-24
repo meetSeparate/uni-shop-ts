@@ -4,6 +4,13 @@ import { getHomeGoodsGuessAPI } from '@/services/home'
 import type { PageParams } from '@/types/global'
 import type { GuessItem } from '@/types/home'
 
+defineProps({
+  title: {
+    type: Boolean,
+    default: () => true,
+  },
+})
+
 // 分页参数
 const pageParams: Required<PageParams> = {
   page: 1,
@@ -22,7 +29,7 @@ const getHomeGoodsGuessData = async () => {
   }
   const res = await getHomeGoodsGuessAPI(pageParams)
   guessList.value.push(...res.result.items)
-  if (pageParams.pageSize < res.result.pages) {
+  if (pageParams.page < res.result.pages) {
     // 页码累加
     pageParams.page++
   } else {
@@ -50,7 +57,7 @@ onMounted(() => {
 
 <template>
   <!-- 猜你喜欢 -->
-  <view class="caption">
+  <view class="caption" v-if="title">
     <text class="text">猜你喜欢</text>
   </view>
   <view class="guess">
@@ -58,7 +65,7 @@ onMounted(() => {
       class="guess-item"
       v-for="item in guessList"
       :key="item.id"
-      :url="`/pages/goods/goods?id=4007498`"
+      :url="`/pages/goods/goods?id=${item.id}`"
     >
       <image class="image" mode="aspectFill" :src="item.picture"></image>
       <view class="name"> {{ item.name }} </view>

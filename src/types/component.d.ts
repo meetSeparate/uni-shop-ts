@@ -14,5 +14,5 @@ declare module 'vue' {
 }
 
 // 组件实例类型
-export type CommonGuessInstance = InstanceType<typeof XtxGuess>
-export type CommonSwiperInstance = InstanceType<typeof XtxSwiper>
+export type CommonGuessInstance = InstanceType<typeof CommonGuess>
+export type CommonSwiperInstance = InstanceType<typeof CommonSwiper>

@@ -10,7 +10,7 @@ import { request } from '@/utils/request'
 export const getHomeBannerAPI = (distributionSite = 1) => {
   return request<BannerItem[]>({
     method: 'GET',
-    url: '/home/banner',
+    url: 'http://127.0.0.1:8000/api/banner',
     data: {
       distributionSite,
     },
@@ -20,7 +20,7 @@ export const getHomeBannerAPI = (distributionSite = 1) => {
 // 获取首页分类数据
 export const getHomeCategoryAPI = () => {
   return request<CategoryItem[]>({
-    url: '/home/category/mutli',
+    url: 'http://127.0.0.1:8000/api/category',
     method: 'GET',
   })
 }
@@ -28,7 +28,7 @@ export const getHomeCategoryAPI = () => {
 // 获取首页热门推荐数据
 export const getHomeHotAPI = () => {
   return request<HotItem[]>({
-    url: '/home/hot/mutli',
+    url: 'http://127.0.0.1:8000/api/hot',
     method: 'GET',
   })
 }
@@ -36,7 +36,7 @@ export const getHomeHotAPI = () => {
 // 猜你喜欢
 export const getHomeGoodsGuessAPI = (data?: PageParams) => {
   return request<PageResult<GuessItem>>({
-    url: '/home/goods/guessLike',
+    url: 'http://127.0.0.1:8000/api/guess',
     method: 'GET',
     data,
   })

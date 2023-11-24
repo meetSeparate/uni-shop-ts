@@ -8,7 +8,7 @@ import type { CartItem } from '@/types/cart'
 export const postMemberCartAPI = (data: { skuId: string; count: number }) => {
   return request({
     method: 'POST',
-    url: '/member/cart',
+    url: 'http://127.0.0.1:8000/api/cart/',
     data,
   })
 }
@@ -19,7 +19,7 @@ export const postMemberCartAPI = (data: { skuId: string; count: number }) => {
 export const getMemberCartAPI = () => {
   return request<CartItem[]>({
     method: 'GET',
-    url: '/member/cart',
+    url: 'http://127.0.0.1:8000/api/cart',
   })
 }
 

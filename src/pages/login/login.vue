@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
-import { postLoginWxMinAPI, wxLoginSimpleAPI } from '@/services/login'
+import { ref } from 'vue'
+import { postLoginWxMinAPI, wxLoginSimpleAPI, loginAPI } from '@/services/login'
 import { useMemberStore } from '@/stores/modules/member'
-import type {LoginResult} from "@/types/member";
+import type { LoginResult } from '@/types/member'
 
 // 获取 code 登录凭证
 let code = ''
@@ -13,21 +14,36 @@ onLoad(async () => {
 })
 
 // 获取用户手机号码(企业版)
-const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
-  const encryptedData = ev.detail.encryptedData!
-  const iv = ev.detail.iv!
-  const res = await postLoginWxMinAPI({
-    code,
-    encryptedData,
-    iv,
-  })
-  loginSuccess(res.result)
-}
+// const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
+//   const encryptedData = ev.detail.encryptedData!
+//   const iv = ev.detail.iv!
+//   const res = await postLoginWxMinAPI({
+//     code,
+//     encryptedData,
+//     iv,
+//   })
+//   loginSuccess(res.result)
+// }
 
 // 获取用户手机号码(个人测试版)
 const onGetPhoneNumberSample = async () => {
   const res = await wxLoginSimpleAPI('15564356312')
   loginSuccess(res.result)
+}
+
+const form = ref({
+  username: '',
+  password: '',
+})
+
+const login = async () => {
+  const res = await loginAPI(form.value)
+  const memberStore = useMemberStore()
+  memberStore.setProfile(res)
+  uni.showToast({ icon: 'success', title: '登录成功' })
+  setTimeout(() => {
+    uni.switchTab({ url: '/pages/my/my' })
+  }, 500)
 }
 
 // 登录成功逻辑
@@ -44,33 +60,38 @@ const loginSuccess = (profile: LoginResult) => {
 <template>
   <view class="viewport">
     <view class="logo">
-      <image
-        src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/images/logo_icon.png"
-      ></image>
+      <image src="@/static/images/bike.svg"></image>
     </view>
     <view class="login">
-      <!-- 网页端表单登录 -->
-      <!-- <input class="input" type="text" placeholder="请输入用户名/手机号码" /> -->
-      <!-- <input class="input" type="text" password placeholder="请输入密码" /> -->
-      <!-- <button class="button phone">登录</button> -->
+      <!--       网页端表单登录 -->
+      <input
+        class="input"
+        type="text"
+        v-model="form.username"
+        placeholder="请输入用户名/手机号码"
+      />
+      <input class="input" type="text" v-model="form.password" password placeholder="请输入密码" />
+      <button class="button phone" @click="login">登录</button>
 
       <!-- 小程序端授权登录 -->
-      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber">
-        <text class="icon icon-phone"></text>
-        手机号快捷登录
-      </button>
-      <view class="extra">
-        <view class="caption">
-          <text>其他登录方式</text>
+      <template v-if="false">
+        <button class="button phone" open-type="getPhoneNumber">
+          <text class="icon icon-phone"></text>
+          手机号快捷登录
+        </button>
+        <view class="extra">
+          <view class="caption">
+            <text>其他登录方式</text>
+          </view>
+          <view class="options">
+            <!-- 通用模拟登录 -->
+            <button @tap="onGetPhoneNumberSample">
+              <text class="icon icon-phone">模拟快捷登录</text>
+            </button>
+          </view>
         </view>
-        <view class="options">
-          <!-- 通用模拟登录 -->
-          <button @tap="onGetPhoneNumberSample">
-            <text class="icon icon-phone">模拟快捷登录</text>
-          </button>
-        </view>
-      </view>
-      <view class="tips">登录/注册即视为你同意《服务条款》和《小兔鲜儿隐私协议》</view>
+      </template>
+      <view class="tips">登录/注册即视为你同意《服务条款》和《系统隐私协议》</view>
     </view>
   </view>
 </template>
