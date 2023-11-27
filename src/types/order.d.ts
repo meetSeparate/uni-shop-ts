@@ -92,6 +92,8 @@ export type OrderResult = {
   postFee: number
   /** 应付金额 */
   payMoney: number
+  // 订单商品总数量
+  shopCount?: number
 }
 
 /** 商品信息 */

@@ -30,7 +30,7 @@ export const getMemberCartAPI = () => {
 export const deleteMemberCartAPI = (data: { ids: string[] }) => {
   return request({
     method: 'DELETE',
-    url: '/member/cart',
+    url: 'http://127.0.0.1:8000/api/cart/',
     data,
   })
 }
@@ -46,7 +46,7 @@ export const putMemberCartBySkuIdAPI = (
 ) => {
   return request({
     method: 'PUT',
-    url: `/member/cart/${skuId}`,
+    url: `http://127.0.0.1:8000/api/cart_detail/${skuId}/`,
     data,
   })
 }
@@ -58,7 +58,7 @@ export const putMemberCartBySkuIdAPI = (
 export const putMemberCartSelectedAPI = (data: { selected: boolean }) => {
   return request({
     method: 'PUT',
-    url: '/member/cart/selected',
+    url: 'http://127.0.0.1:8000/api/cart/',
     data,
   })
 }

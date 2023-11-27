@@ -69,7 +69,7 @@ const onSubmit = async () => {
     // 判断当前页面是否有地址 id
     if (query.id) {
       // 修改地址请求
-      await putMemberAddressByIdAPI(query.id, form.value)
+      await putMemberAddressByIdAPI({ id: query.id, ...form.value })
     } else {
       // 新建地址请求
       await postMemberAddressAPI(form.value)

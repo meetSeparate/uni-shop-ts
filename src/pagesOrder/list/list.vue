@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { getOrderListAPI, changeOrderStatusAPI, delOrderAPI } from '@/services/order'
+import type { OrderResult } from '@/types/order'
+import { orderStateList } from '@/services/constants'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -12,6 +15,13 @@ const orderTabs = ref([
   { orderState: 4, title: '待评价' },
 ])
 
+// 订单列表
+const orderList = ref<OrderResult[]>()
+const getOrderData = async (status: number) => {
+  const res = await getOrderListAPI(status)
+  orderList.value = res.result
+}
+
 // 获取页面参数
 const query = defineProps<{
   type: string
@@ -19,6 +29,31 @@ const query = defineProps<{
 
 // 高亮下标
 const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number(query.type)))
+
+// 监听下标变化
+watch(activeIndex, () => {
+  getOrderData(activeIndex.value)
+})
+
+// 修改订单状态
+const changeStatus = async (id: string, status: string) => {
+  await changeOrderStatusAPI(id, status)
+  status === '2'
+    ? uni.showToast({ icon: 'none', title: '支付成功' })
+    : uni.showToast({ icon: 'none', title: '取消成功' })
+  uni.navigateBack()
+}
+
+// 删除订单
+const delOrder = async (id: string) => {
+  await delOrderAPI(id)
+  uni.showToast({ icon: 'none', title: '删除成功' })
+  getOrderData(activeIndex.value)
+}
+
+onMounted(() => {
+  getOrderData(0)
+})
 </script>
 
 <template>
@@ -42,45 +77,42 @@ const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number
       <swiper-item v-for="item in orderTabs" :key="item.title">
         <!-- 订单列表 -->
         <scroll-view scroll-y class="orders">
-          <view class="card" v-for="item in 2" :key="item">
+          <view class="card" v-for="item in orderList" :key="item.id">
             <!-- 订单信息 -->
             <view class="status">
-              <text class="date">2023-04-14 13:14:20</text>
+              <text class="date">{{ item.createTime }}</text>
               <!-- 订单状态文字 -->
-              <text>待付款</text>
+              <text>{{ orderStateList[item.orderState].text }}</text>
               <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
-              <text class="icon-delete"></text>
+              <text class="icon-delete" @tap="delOrder(item.id)"></text>
             </view>
             <!-- 商品信息，点击商品跳转到订单详情，不是商品详情 -->
             <navigator
-              v-for="sku in 2"
-              :key="sku"
+              v-for="sku in item.skus"
+              :key="sku.id"
               class="goods"
-              :url="`/pagesOrder/detail/detail?id=1`"
+              :url="`/pagesOrder/detail/detail?id=${sku.spuId}`"
               hover-class="none"
             >
               <view class="cover">
-                <image
-                  mode="aspectFit"
-                  src="https://yanxuan-item.nosdn.127.net/c07edde1047fa1bd0b795bed136c2bb2.jpg"
-                ></image>
+                <image mode="aspectFit" :src="sku.image"></image>
               </view>
               <view class="meta">
-                <view class="name ellipsis">ins风小碎花泡泡袖衬110-160cm</view>
-                <view class="type">藏青小花 130</view>
+                <view class="name ellipsis">{{ sku.name }}</view>
+                <view class="type">{{ sku.attrsText }}</view>
               </view>
             </navigator>
             <!-- 支付信息 -->
             <view class="payment">
-              <text class="quantity">共5件商品</text>
+              <text class="quantity">共{{ item.shopCount }}件商品</text>
               <text>实付</text>
-              <text class="amount"> <text class="symbol">¥</text>99</text>
+              <text class="amount"> <text class="symbol">¥</text>{{ item.payMoney }}</text>
             </view>
             <!-- 订单操作按钮 -->
             <view class="action">
               <!-- 待付款状态：显示去支付按钮 -->
-              <template v-if="true">
-                <view class="button primary">去支付</view>
+              <template v-if="item.orderState === 1">
+                <view class="button primary" @tap="changeStatus(item.id, '2')">去支付</view>
               </template>
               <template v-else>
                 <navigator

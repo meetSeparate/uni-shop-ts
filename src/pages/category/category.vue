@@ -22,13 +22,12 @@ const getCategoryData = async () => {
 }
 // 高亮下标
 const activeIndex = ref(0)
-
-// 二级分类
-const subCategoryList = computed(() => {
-  return categoryList.value[activeIndex.value]?.children || []
-})
 // 是否展示骨架屏
 const isLoading = ref(false)
+
+const goodsList = computed(() => {
+  return categoryList.value[activeIndex.value].goods
+})
 
 onLoad(async () => {
   isLoading.value = true
@@ -52,7 +51,7 @@ onLoad(async () => {
       <scroll-view class="primary" scroll-y>
         <view
           v-for="(item, index) in categoryList"
-          :key="item.id"
+          :key="item"
           class="item"
           :class="{ active: index === activeIndex }"
           @tap="activeIndex = index"
@@ -65,27 +64,24 @@ onLoad(async () => {
         <!-- 焦点图 -->
         <CommonSwiper class="banner" :list="bannerList" />
         <!-- 内容区域 -->
-        <view class="panel" v-for="item in subCategoryList" :key="item.id">
-          <view class="title">
-            <text class="name">{{ item.name }}</text>
-            <navigator class="more" hover-class="none">全部</navigator>
-          </view>
-          <view class="section">
-            <navigator
-              v-for="goods in item.goods"
-              :key="goods.id"
-              class="goods"
-              hover-class="none"
-              :url="`/pages/goods/goods?id=${goods.id}`"
-            >
-              <image class="image" :src="goods.picture"></image>
-              <view class="name ellipsis">{{ goods.name }}</view>
-              <view class="price">
-                <text class="symbol">¥</text>
-                <text class="number">{{ goods.price }}</text>
-              </view>
-            </navigator>
-          </view>
+        <view class="title">
+          <navigator class="more" hover-class="none">全部</navigator>
+        </view>
+        <view class="section">
+          <navigator
+            v-for="goods in goodsList"
+            :key="goods"
+            class="goods"
+            hover-class="none"
+            :url="`/pages/goods/goods?id=${goods.id}`"
+          >
+            <image class="image" :src="goods.picture"></image>
+            <view class="name ellipsis">{{ goods.name }}</view>
+            <view class="price">
+              <text class="symbol">¥</text>
+              <text class="number">{{ goods.price }}</text>
+            </view>
+          </navigator>
         </view>
       </scroll-view>
     </view>
@@ -97,14 +93,17 @@ page {
   height: 100%;
   overflow: hidden;
 }
+
 .viewport {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
+
 .search {
   padding: 0 30rpx 20rpx;
   background-color: #fff;
+
   .input {
     display: flex;
     align-items: center;
@@ -117,23 +116,27 @@ page {
     background-color: #f3f4f4;
   }
 }
+
 .icon-search {
   &::before {
     margin-right: 10rpx;
   }
 }
+
 /* 分类 */
 .categories {
   flex: 1;
   min-height: 400rpx;
   display: flex;
 }
+
 /* 一级分类 */
 .primary {
   overflow: hidden;
   width: 180rpx;
   flex: none;
   background-color: #f6f6f6;
+
   .item {
     display: flex;
     justify-content: center;
@@ -142,6 +145,7 @@ page {
     font-size: 26rpx;
     color: #595c63;
     position: relative;
+
     &::after {
       content: '';
       position: absolute;
@@ -151,8 +155,10 @@ page {
       border-top: 1rpx solid #e3e4e7;
     }
   }
+
   .active {
     background-color: #fff;
+
     &::before {
       content: '';
       position: absolute;
@@ -164,28 +170,34 @@ page {
     }
   }
 }
+
 .primary .item:last-child::after,
 .primary .active::after {
   display: none;
 }
+
 /* 二级分类 */
 .secondary {
   background-color: #fff;
+
   .carousel {
     height: 200rpx;
     margin: 0 30rpx 20rpx;
     border-radius: 4rpx;
     overflow: hidden;
   }
+
   .panel {
     margin: 0 30rpx 0rpx;
   }
+
   .title {
     height: 60rpx;
     line-height: 60rpx;
     color: #333;
     font-size: 28rpx;
     border-bottom: 1rpx solid #f7f7f8;
+
     .more {
       float: right;
       padding-left: 20rpx;
@@ -193,37 +205,45 @@ page {
       color: #999;
     }
   }
+
   .more {
     &::after {
       font-family: 'erabbit' !important;
       content: '\e6c2';
     }
   }
+
   .section {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     padding: 20rpx 0;
+
     .goods {
       width: 150rpx;
       margin: 0rpx 30rpx 20rpx 0;
+
       &:nth-child(3n) {
         margin-right: 0;
       }
+
       image {
         width: 150rpx;
         height: 150rpx;
       }
+
       .name {
         padding: 5rpx;
         font-size: 22rpx;
         color: #333;
       }
+
       .price {
         padding: 5rpx;
         font-size: 18rpx;
         color: #cf4444;
       }
+
       .number {
         font-size: 24rpx;
         margin-left: 2rpx;

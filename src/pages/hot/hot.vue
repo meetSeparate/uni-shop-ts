@@ -31,17 +31,17 @@ bannerPicture.value =
 </script>
 
 <template>
-  <view class="viewport">
-    <!-- 推荐封面图 -->
-    <view class="cover">
-      <image :src="bannerPicture"></image>
-    </view>
-    <view class="middle"></view>
-    <!-- 推荐列表 -->
-    <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrollToLower">
+  <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrollToLower">
+    <view class="viewport">
+      <!-- 推荐封面图 -->
+      <view class="cover">
+        <image :src="bannerPicture"></image>
+      </view>
+      <view class="middle"></view>
+      <!-- 推荐列表 -->
       <common-guess ref="guessRef" :title="false" />
-    </scroll-view>
-  </view>
+    </view>
+  </scroll-view>
 </template>
 
 <style lang="scss">

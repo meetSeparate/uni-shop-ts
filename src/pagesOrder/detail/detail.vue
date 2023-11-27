@@ -2,7 +2,7 @@
 import { useGuessList } from '@/composables'
 import { ref } from 'vue'
 import { onReady } from '@dcloudio/uni-app'
-import { getMemberOrderByIdAPI } from '@/services/order'
+import { getMemberOrderByIdAPI, changeOrderStatusAPI } from '@/services/order'
 import { OrderState, orderStateList } from '@/services/constants'
 import type { OrderResult } from '@/types/order'
 import { onLoad } from '@dcloudio/uni-app'
@@ -47,9 +47,17 @@ type PageInstance = Page.PageInstance & WechatMiniprogram.Page.InstanceMethods<a
 // 获取当前页面实例，数组最后一项
 const pageInstance = pages.at(-1) as PageInstance
 
+// 修改订单状态
+const changeStatus = async (status: string) => {
+  await changeOrderStatusAPI(query.id, status)
+  status === '2'
+    ? uni.showToast({ icon: 'none', title: '支付成功' })
+    : uni.showToast({ icon: 'none', title: '取消成功' })
+  uni.navigateBack()
+}
+
 // 页面渲染完毕，绑定动画效果
 onReady(() => {
-  console.log(123)
   // 动画效果,导航栏背景色
   pageInstance.animate(
     '.navbar', // 选择器
@@ -121,7 +129,7 @@ onLoad(() => {
               @timeup="onTimeup"
             />
           </view>
-          <view class="button">去支付</view>
+          <view class="button" @tap="changeStatus('2')">去支付</view>
         </template>
         <!-- 其他订单状态:展示再次购买按钮 -->
         <template v-else>
@@ -165,7 +173,7 @@ onLoad(() => {
               <view class="price">
                 <view class="actual">
                   <text class="symbol">¥</text>
-                  <text>{{ item.realPay }}</text>
+                  <text>{{ item.curPrice }}</text>
                 </view>
               </view>
               <view class="quantity">x{{ item.quantity }}</view>
@@ -201,7 +209,7 @@ onLoad(() => {
           <view class="item">
             订单编号: {{ query.id }} <text class="copy" @tap="onCopy(query.id)">复制</text>
           </view>
-          <view class="item">下单时间: {{ order!.payLatestTime }}</view>
+          <view class="item">下单时间: {{ order!.createTime }}</view>
         </view>
       </view>
 
@@ -213,7 +221,7 @@ onLoad(() => {
       <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
         <!-- 待付款状态:展示支付按钮 -->
         <template v-if="true">
-          <view class="button primary"> 去支付 </view>
+          <view class="button primary" @tap="changeStatus('2')"> 去支付 </view>
           <view class="button" @tap="popup?.open?.()"> 取消订单 </view>
         </template>
         <!-- 其他订单状态:按需展示按钮 -->
@@ -252,7 +260,7 @@ onLoad(() => {
       </view>
       <view class="footer">
         <view class="button" @tap="popup?.close?.()">取消</view>
-        <view class="button primary">确认</view>
+        <view class="button primary" @tap="changeStatus('6')">确认</view>
       </view>
     </view>
   </uni-popup>

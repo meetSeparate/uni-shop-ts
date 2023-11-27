@@ -4,7 +4,7 @@ import type { OrderPreResult, OrderCreateParams, OrderResult } from '@/types/ord
 export const getMemberOrderPreAPI = () => {
   return request<OrderPreResult>({
     method: 'GET',
-    url: '/member/order/pre',
+    url: 'http://127.0.0.1:8000/api/order_pre',
   })
 }
 
@@ -18,7 +18,7 @@ export const getMemberOrderPreNowAPI = (data: {
 }) => {
   return request<OrderPreResult>({
     method: 'GET',
-    url: '/member/order/pre/now',
+    url: 'http://127.0.0.1:8000/api/order_pre',
     data,
   })
 }
@@ -30,8 +30,15 @@ export const getMemberOrderPreNowAPI = (data: {
 export const postMemberOrderAPI = (data: OrderCreateParams) => {
   return request<{ id: string }>({
     method: 'POST',
-    url: '/member/order',
+    url: 'http://127.0.0.1:8000/api/order/',
     data,
+  })
+}
+
+export const deleteOrderPreAPI = () => {
+  return request({
+    url: 'http://127.0.0.1:8000/api/order_pre/',
+    method: 'DELETE',
   })
 }
 
@@ -42,6 +49,34 @@ export const postMemberOrderAPI = (data: OrderCreateParams) => {
 export const getMemberOrderByIdAPI = (id: string) => {
   return request<OrderResult>({
     method: 'GET',
-    url: `/member/order/${id}`,
+    url: `http://127.0.0.1:8000/api/order`,
+    data: { id },
+  })
+}
+
+// 修改订单状态
+export const changeOrderStatusAPI = (id: string, status: string) => {
+  return request({
+    url: 'http://127.0.0.1:8000/api/order/',
+    method: 'PUT',
+    data: { id, status },
+  })
+}
+
+// 获取订单列表
+export const getOrderListAPI = (status: number) => {
+  return request<OrderResult[]>({
+    url: 'http://127.0.0.1:8000/api/order',
+    method: 'GET',
+    data: { status },
+  })
+}
+
+// 删除订单
+export const delOrderAPI = (id: string) => {
+  return request({
+    url: 'http://127.0.0.1:8000/api/order/',
+    method: 'DELETE',
+    data: { id },
   })
 }

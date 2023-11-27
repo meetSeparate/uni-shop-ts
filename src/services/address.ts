@@ -3,7 +3,7 @@ import type { AddressParams, AddressItem } from '@/types/address'
 
 export const postMemberAddressAPI = (data: AddressParams) => {
   return request({
-    url: '/member/address',
+    url: 'http://127.0.0.1:8000/api/address/',
     method: 'POST',
     data,
   })
@@ -12,7 +12,7 @@ export const postMemberAddressAPI = (data: AddressParams) => {
 // 获取收货地址列表
 export const getMemberAddressAPI = () => {
   return request<AddressItem[]>({
-    url: '/member/address',
+    url: 'http://127.0.0.1:8000/api/address',
     method: 'GET',
   })
 }
@@ -24,7 +24,8 @@ export const getMemberAddressAPI = () => {
 export const getMemberAddressByIdAPI = (id: string) => {
   return request<AddressItem>({
     method: 'GET',
-    url: `/member/address/${id}`,
+    url: `http://127.0.0.1:8000/api/address`,
+    data: { id },
   })
 }
 
@@ -33,10 +34,10 @@ export const getMemberAddressByIdAPI = (id: string) => {
  * @param id 地址id(路径参数)
  * @param data 表单数据(请求体参数)
  */
-export const putMemberAddressByIdAPI = (id: string, data: AddressParams) => {
+export const putMemberAddressByIdAPI = (data: { id: string } & AddressParams) => {
   return request({
     method: 'PUT',
-    url: `/member/address/${id}`,
+    url: `http://127.0.0.1:8000/api/address/`,
     data,
   })
 }
@@ -48,6 +49,7 @@ export const putMemberAddressByIdAPI = (id: string, data: AddressParams) => {
 export const deleteMemberAddressByIdAPI = (id: string) => {
   return request({
     method: 'DELETE',
-    url: `/member/address/${id}`,
+    url: `http://127.0.0.1:8000/api/address/`,
+    data: { id },
   })
 }

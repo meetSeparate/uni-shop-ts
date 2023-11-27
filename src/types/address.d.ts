@@ -10,6 +10,7 @@ export type AddressParams = {
   cityCode: string
   /** 区/县编码 */
   countyCode: string
+  fullLocation: string
   /** 详细地址 */
   address: string
   /** 默认地址，1为是，0为否 */

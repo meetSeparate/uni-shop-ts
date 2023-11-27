@@ -21,7 +21,7 @@ const httpInterceptor = {
     const memberStore = useMemberStore()
     const token = memberStore.profile?.token
     if (token) {
-      options.header.Authorization = token
+      options.header.Authorization = `Bearer ${token}`
     }
   },
 }

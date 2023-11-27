@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import type { OrderPreResult } from '@/types/order'
-import { getMemberOrderPreAPI, getMemberOrderPreNowAPI, postMemberOrderAPI } from '@/services/order'
+import { getMemberOrderPreAPI, getMemberOrderPreNowAPI, postMemberOrderAPI, deleteOrderPreAPI } from '@/services/order'
 import { useAddressStore } from '@/stores/modules/address'
+import { onUnload } from '@dcloudio/uni-app'
 
 // 获取页面参数
 const props = defineProps<{
@@ -22,7 +23,6 @@ const getMemberOrderPreData = async () => {
     const res = await getMemberOrderPreAPI()
     orderPre.value = res.result
   }
-  console.log(orderPre.value)
 }
 
 // 获取屏幕边界到安全区域距离
@@ -66,6 +66,14 @@ const createOrder = async () => {
   // 关闭当前页面，跳转到订单详情，传递订单id
   uni.redirectTo({ url: `/pagesOrder/detail/detail?id=${res.result.id}` })
 }
+// 删除当前用户所有预订单
+const deleteAllOrderPre = () => {
+  deleteOrderPreAPI()
+}
+
+onUnload(() => {
+  deleteAllOrderPre()
+})
 
 onMounted(() => {
   getMemberOrderPreData()

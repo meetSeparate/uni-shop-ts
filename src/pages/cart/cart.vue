@@ -16,7 +16,6 @@ import { useGuessList } from '@/composables'
 const cartList = ref<CartItem[]>([])
 const getMemberCartData = async () => {
   const res = await getMemberCartAPI()
-  console.log(res.result)
   cartList.value = res.result
 }
 
